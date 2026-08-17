@@ -145,4 +145,141 @@ table{font-size:12px;min-width:700px}
 #telaInicio{width:100%;max-width:100%;transform:none!important;zoom:1!important;}
 body *{zoom:1!important;}
 
+/* =========================================================
+   RECEITAS & DESPESAS PRO — UX RESPONSIVA 2026
+   Camada final de acabamento. Preserva a lógica existente.
+   ========================================================= */
+:root{
+  --ui-scale:1;
+  --surface:rgba(255,255,255,.92);
+  --surface-soft:rgba(248,250,252,.92);
+  --line:#e2e8f0;
+  --text:#0f172a;
+  --muted:#64748b;
+  --primary:#0284c7;
+  --success:#16a34a;
+  --danger:#dc2626;
+  --warning:#d97706;
+  --shadow:0 12px 32px rgba(15,23,42,.08);
+  --radius:18px;
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth;touch-action:manipulation}
+body{padding:clamp(6px,1.2vw,18px);line-height:1.45}
+body:not(.login) #painelMobile{max-width:1600px;margin:0 auto}
+button,.navItem,.cardAcao,.topoMes,.btnFiltro{-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none}
+button,input,select,textarea{font:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid rgba(14,165,233,.30);outline-offset:2px}
+input,select,textarea{min-height:44px;border-radius:12px;border-color:#cbd5e1;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.03)}
+input:hover,select:hover,textarea:hover{border-color:#94a3b8}
+input:focus,select:focus,textarea:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.13);outline:none}
+button{min-height:44px;padding:10px 14px;border-radius:12px;box-shadow:0 2px 5px rgba(15,23,42,.06)}
+button:disabled{opacity:.55;cursor:not-allowed;transform:none!important}
+.card,.boxMes,.filtroMovimentos,.heroFinanceiro,.kpiCard,.cardAcao{border-color:rgba(226,232,240,.9);box-shadow:var(--shadow)}
+.card{margin:10px 0;padding:clamp(14px,2vw,22px)}
+#containerExtrato{width:100%;max-width:1500px;margin:0 auto;padding:clamp(8px,1.5vw,18px)}
+.topBarMobile{position:sticky;top:0;z-index:1000;border-radius:0 0 16px 16px;min-height:58px}
+.bottomNav{height:76px;padding-bottom:env(safe-area-inset-bottom);min-height:calc(76px + env(safe-area-inset-bottom))}
+.navItem{min-width:58px;min-height:52px;justify-content:center;border-radius:12px;padding:4px 8px;cursor:pointer}
+.navItem:hover{background:#f1f5f9;color:#0369a1}
+.navAtivo{background:#e0f2fe;color:#0369a1}
+.zoomControls{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:calc(88px + env(safe-area-inset-bottom));z-index:99998;display:flex;align-items:center;gap:5px;padding:5px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.94);box-shadow:0 10px 28px rgba(15,23,42,.14);backdrop-filter:blur(12px)}
+.zoomBtn{width:auto!important;min-width:42px!important;min-height:38px!important;padding:6px 9px!important;background:#fff!important;color:var(--text)!important;border:1px solid var(--line)!important;border-radius:10px!important;font-size:12px!important}
+.zoomReset{min-width:54px!important;color:#0369a1!important}
+.filtroMovimentos{position:sticky;top:66px;z-index:100;padding:12px;gap:12px}
+.filtroGrupo{align-items:center}
+.btnFiltro{min-height:38px;padding:8px 13px}
+.selectMesRapido{min-height:40px}
+.boxMes{overflow:clip}
+.topoMes{min-height:62px;padding:12px 16px}
+.topoMes:hover{background:#f8fafc}
+.btnMes{min-width:38px!important;width:38px!important;height:38px!important;min-height:38px!important}
+.listaMovimentos{padding:12px;gap:8px}
+.cabecalhoExtrato,.movItem{grid-template-columns:minmax(102px,110px) minmax(102px,110px) minmax(115px,130px) minmax(190px,1fr) minmax(120px,145px) minmax(100px,110px) minmax(80px,90px) 50px!important}
+.cabecalhoExtrato{position:sticky;top:134px;z-index:20;background:#f8fafc;box-shadow:0 3px 10px rgba(15,23,42,.05)}
+.movItem{padding:10px 12px!important;margin-bottom:0!important;border-radius:14px!important;transition:box-shadow .18s ease,transform .18s ease,border-color .18s ease}
+.movItem:hover{border-color:#cbd5e1!important;box-shadow:0 8px 22px rgba(15,23,42,.07)!important;transform:translateY(-1px)}
+.movItem input[type="date"]{width:100%!important;min-width:0!important;height:38px!important;min-height:38px!important;padding:5px 7px!important;font-size:11px!important}
+.movItem input[type="number"],.movItem input:not([type]){min-height:38px}
+.btnStatus,.btnRecorrencia{min-height:34px!important;height:34px!important}
+.btnMini{min-width:36px!important;width:36px!important;height:36px!important;min-height:36px!important}
+.gridKPIs{gap:14px}
+.kpiCard{min-height:138px}
+.acoesRapidas{grid-template-columns:repeat(4,minmax(130px,180px));gap:12px}
+.cardAcao{min-height:106px}
+#telaIA textarea{resize:vertical}
+#telaRelatorios ul{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+#telaRelatorios li button{width:100%;height:100%}
+
+@media (hover:none){
+  button:hover,.cardAcao:hover,.topoMes:hover,.movItem:hover{transform:none;box-shadow:inherit}
+}
+@media (max-width:1100px) and (min-width:769px){
+  .cabecalhoExtrato,.movItem{grid-template-columns:100px 100px 110px minmax(160px,1fr) 120px 95px 76px 44px!important;gap:7px!important}
+  #containerExtrato{padding:10px}
+  .acoesRapidas{grid-template-columns:repeat(4,1fr)}
+}
+@media (max-width:768px){
+  body{padding:0!important;padding-bottom:env(safe-area-inset-bottom)!important;background-attachment:scroll}
+  #painelMobile{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+  .telaApp,.telaAtiva,#telaInicio,#telaExtrato,#telaPerfil,#telaIA{min-height:100dvh}
+  #telaInicio{padding:8px}
+  #containerExtrato{padding:8px}
+  .card{border-radius:16px;padding:14px!important;margin:8px 0!important}
+  #telaInicio>.card:first-child{padding:16px!important}
+  #telaInicio>.card:first-child>div{gap:12px!important}
+  #telaInicio>.card:first-child div[style*="font-size:28px"]{font-size:clamp(22px,6vw,28px)!important;line-height:1.12}
+  .heroTag{padding:8px 10px;font-size:12px}
+  .gridKPIs{gap:10px}
+  .kpiCard{min-height:120px;padding:14px}
+  .kpiTitulo{font-size:15px}.kpiValor{font-size:clamp(26px,8vw,32px)}
+  .acoesRapidas{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+  .cardAcao{min-height:94px;padding:10px;border-radius:16px}
+  .cardAcaoIcone{width:50px;height:50px;font-size:23px}
+  .filtroMovimentos{position:relative;top:auto;display:grid!important;grid-template-columns:1fr;padding:10px;margin-bottom:10px;border-radius:16px}
+  .filtroGrupo{display:grid!important;grid-template-columns:repeat(2,1fr);width:100%}
+  .btnFiltro{width:100%!important;min-height:42px}
+  .filtroMovimentos>div[style*="display:flex"]{display:grid!important;grid-template-columns:1fr 1fr;width:100%;gap:8px!important}
+  .filtroMovimentos>div[style*="display:flex"]>div:first-child{grid-column:1/-1}
+  #filtroDataInicio,#filtroDataFim,.selectMesRapido{width:100%!important;min-width:0!important}
+  #telaExtrato div[style*="justify-content:flex-end"]{display:grid!important;grid-template-columns:repeat(2,1fr);gap:8px!important}
+  #telaExtrato div[style*="justify-content:flex-end"] button{width:100%!important}
+  .boxMes{border-radius:16px;margin-bottom:12px!important}
+  .topoMes{padding:10px 12px;gap:8px;min-height:58px}
+  .tituloMes{font-size:14px}.tituloMes span{width:34px;height:34px}.valorMes{font-size:15px!important}
+  .listaMovimentos{padding:8px!important;gap:8px!important}
+  .cabecalhoExtrato{display:none!important}
+  .movItem{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;padding:12px!important;align-items:start!important;border-radius:14px!important}
+  .movItem>div{width:100%!important;min-width:0!important}
+  .movItem>div:nth-child(3),.movItem>div:nth-child(4),.movItem>div:nth-child(5){grid-column:1/-1}
+  .movItem>div:nth-child(6),.movItem>div:nth-child(7),.movItem>div:nth-child(8){width:auto!important}
+  .movItem>div:nth-child(5){justify-content:flex-start!important;padding-top:4px;border-top:1px dashed #e2e8f0}
+  .movItem>div:nth-child(5)>div{font-size:22px!important}
+  .movItem input[type="date"]{font-size:12px!important;min-height:42px!important;height:42px!important}
+  .movItem input[type="number"],.movItem input:not([type]){width:100%!important}
+  #formInsercao{padding:14px!important}
+  #formInsercao div{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}
+  #formInsercao input,#formInsercao select,#formInsercao button{min-height:48px}
+  .bottomNav{overflow-x:auto;justify-content:space-around;gap:2px;padding-left:4px;padding-right:4px}
+  .navItem{flex:1;min-width:58px;font-size:10px}
+  .navItem span{font-size:20px}
+  .zoomControls{right:8px;bottom:calc(84px + env(safe-area-inset-bottom));transform:scale(.92);transform-origin:right bottom}
+  .swotBody{padding:16px;gap:12px}.swotLivro{width:78px}.swotTexto h2{font-size:23px}.swotPreco{font-size:30px}.swotBtn{font-size:14px;padding:12px}
+  #telaIA>div[style*="height:100vh"]{height:100dvh!important}
+  #telaIA div[style*="position:fixed"]{bottom:calc(76px + env(safe-area-inset-bottom))!important;padding:8px!important}
+}
+@media (max-width:420px){
+  .movItem{grid-template-columns:1fr!important}
+  .movItem>div{grid-column:1!important}
+  .filtroMovimentos>div[style*="display:flex"]{grid-template-columns:1fr!important}
+  .filtroMovimentos>div[style*="display:flex"]>div:first-child{grid-column:1}
+  #telaExtrato div[style*="justify-content:flex-end"]{grid-template-columns:1fr 1fr!important}
+  .zoomControls{gap:3px;padding:4px}.zoomBtn{min-width:38px!important;padding:5px 7px!important}.zoomReset{min-width:48px!important}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+@media print{
+  .bottomNav,.zoomControls,.topBarMobile,.filtroMovimentos,button{display:none!important}
+  body{padding:0;background:#fff}.card,.boxMes{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+}
 
