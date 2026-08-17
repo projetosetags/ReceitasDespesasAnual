@@ -1389,6 +1389,32 @@ if(!grupos[chave])grupos[chave]=[]
 grupos[chave].push(x)
 })
 /*=========================================================
+GARANTIR MESES FUTUROS NO EXTRATO
+=========================================================*/
+const hojeFuturo=new Date()
+
+for(let i=0;i<6;i++){
+
+const d=new Date(
+hojeFuturo.getFullYear(),
+hojeFuturo.getMonth()+i,
+1
+)
+
+const ano=d.getFullYear()
+
+const mes=String(
+d.getMonth()+1
+).padStart(2,"0")
+
+const chave=ano+"-"+mes
+
+if(!grupos[chave]){
+grupos[chave]=[]
+}
+
+}
+/*=========================================================
 ORDENAR SOMENTE MESES QUE POSSUEM LANÇAMENTOS
 =========================================================*/
 const chaves=Object.keys(grupos)
@@ -1405,111 +1431,57 @@ const chaveAtual=anoAtual+"-"+mesAtual
 
 /* ================= LOOP MESES ================= */
 chaves.forEach(chave=>{
-
 if(mesesOcultos[chave]===undefined){
 mesesOcultos[chave]=(chave!==chaveAtual)
 }
-
 let listaMes=[...(grupos[chave]||[])]
-
 /* FILTRO TIPO */
-if(filtroMovimento==="RECEITA"){
-
+if(typeof filtroMovimento!=="undefined"&&filtroMovimento==="RECEITA"){
+listaMes=listaMes.filter(x=>x.tipo==="RECEITA")
+}else if(typeof filtroMovimento!=="undefined"&&filtroMovimento==="DESPESA"){
+listaMes=listaMes.filter(x=>x.tipo==="DESPESA")
+}else if(typeof filtroMovimento!=="undefined"&&filtroMovimento==="RECORRENTE"){
 listaMes=listaMes.filter(x=>
-x.tipo==="RECEITA"
-)
-
-}else if(filtroMovimento==="DESPESA"){
-
-listaMes=listaMes.filter(x=>
-x.tipo==="DESPESA"
-)
-
-}else if(filtroMovimento==="RECORRENTE"){
-
-listaMes=listaMes.filter(x=>
-x.recorrente===true ||
-x.modo_lancamento==="recorrente" ||
-x.modo_lancamento==="parcelado" ||
+x.recorrente===true||
+x.modo_lancamento==="recorrente"||
+x.modo_lancamento==="parcelado"||
 Boolean(x.grupo_recorrencia)
 )
-
 }
-
-/* FILTRO DATA */
+/* FILTRO PERÍODO */
 const filtroInicio=safe("filtroDataInicio")?.value||""
 const filtroFim=safe("filtroDataFim")?.value||""
-
 if(filtroInicio){
-
 listaMes=listaMes.filter(x=>{
-
-const data=String(
-x.data_vencimento||
-x.data||
-""
-).slice(0,10)
-
+const data=String(x.data_vencimento||x.data||"").slice(0,10)
 return data>=filtroInicio
-
 })
-
 }
-
 if(filtroFim){
-
 listaMes=listaMes.filter(x=>{
-
-const data=String(
-x.data_vencimento||
-x.data||
-""
-).slice(0,10)
-
+const data=String(x.data_vencimento||x.data||"").slice(0,10)
 return data<=filtroFim
-
 })
-
 }
-
-/* NÃO MOSTRAR MÊS VAZIO APÓS FILTROS */
-if(!listaMes.length){
-return
-}
-
+/* ORDENA LANÇAMENTOS */
 listaMes.sort((a,b)=>{
-
-const dataA=String(
-a.data_vencimento||
-a.data||
-""
-).slice(0,10)
-
-const dataB=String(
-b.data_vencimento||
-b.data||
-""
-).slice(0,10)
-
+const dataA=String(a.data_vencimento||a.data||"").slice(0,10)
+const dataB=String(b.data_vencimento||b.data||"").slice(0,10)
 return dataA.localeCompare(dataB)
-
 })
-listaMes.sort((a,b)=>{
-return new Date((a.data_vencimento||a.data)) - new Date((b.data_vencimento||b.data))
-})
-
-let r=0,d=0
+/* TOTAIS DO MÊS */
+let r=0
+let d=0
 listaMes.forEach(x=>{
 const v=Number(x.valor||0)
-if(x.tipo==="RECEITA")r+=v
-else{
+if(x.tipo==="RECEITA"){
+r+=v
+}else if(x.tipo==="DESPESA"){
 d+=v
 }
 })
-
 totalR+=r
 totalD+=d
-
 const saldo=r-d
 const[ano,mes]=chave.split("-")
 const cor=corMes(mes)
