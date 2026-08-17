@@ -42,6 +42,56 @@ function nomeMes(m){
 const meses=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"]
 return meses[Number(m)-1]||m
 }
+<script>
+/*=========================================================
+017 – CONTROLE DE ZOOM / ACESSIBILIDADE
+=========================================================*/
+let zoomInterface=Number(localStorage.getItem("zoomInterface")||100)
+
+function aplicarZoomInterface(){
+
+const escala=Math.max(85,Math.min(130,zoomInterface))
+
+document.documentElement.style.setProperty(
+"--escala-interface",
+escala/100
+)
+
+const indicador=document.getElementById("zoomValor")
+
+if(indicador){
+indicador.innerText=escala+"%"
+}
+
+localStorage.setItem("zoomInterface",escala)
+
+}
+
+function alterarZoom(valor){
+
+zoomInterface+=valor
+
+zoomInterface=Math.max(
+85,
+Math.min(130,zoomInterface)
+)
+
+aplicarZoomInterface()
+
+}
+
+function resetarZoom(){
+
+zoomInterface=100
+
+aplicarZoomInterface()
+
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+aplicarZoomInterface()
+})
+</script>
 /* ==================== CORES POR MÊS ==================== */
 const CORES_MES={
 "01":"#64748b",
@@ -180,9 +230,48 @@ Após o pagamento envie o comprovante pelo WhatsApp para liberação imediata do
 <div class="heroTag">📅 Vigência: 18/04 até 19/07</div>
 </div>
 </div>
-<div style="display:flex;align-items:center;gap:10px">
-<button onclick="toggleSaldo()" class="btnOlho">👁</button>
-<button onclick="logout()" style="background:#ef4444;color:#fff;font-weight:900;padding:12px 20px;border-radius:14px">🚪 Sair</button>
+<div class="acoesCabecalho">
+
+<div class="controleZoom">
+<button
+type="button"
+onclick="alterarZoom(-5)"
+title="Diminuir interface"
+aria-label="Diminuir interface">
+A−
+</button>
+
+<button
+type="button"
+id="zoomValor"
+onclick="resetarZoom()"
+title="Restaurar tamanho"
+aria-label="Restaurar tamanho">
+100%
+</button>
+
+<button
+type="button"
+onclick="alterarZoom(5)"
+title="Aumentar interface"
+aria-label="Aumentar interface">
+A+
+</button>
+</div>
+
+<button
+onclick="toggleSaldo()"
+class="btnOlho"
+title="Mostrar ou ocultar valores">
+👁
+</button>
+
+<button
+onclick="logout()"
+class="btnSair">
+🚪 Sair
+</button>
+
 </div>
 </div>
 </div>
@@ -315,10 +404,31 @@ display:block!important;
 <div class="filtroMovimentos">
 
 <div class="filtroGrupo">
-<button class="btnFiltro btnFiltroAtivo">Todas</button>
-<button class="btnFiltro">Receitas</button>
-<button class="btnFiltro">Despesas</button>
-<button class="btnFiltro">Recorrentes</button>
+
+<button
+class="btnFiltro btnFiltroAtivo"
+onclick="filtrarMovimentos('TODAS',this)">
+Todas
+</button>
+
+<button
+class="btnFiltro"
+onclick="filtrarMovimentos('RECEITA',this)">
+Receitas
+</button>
+
+<button
+class="btnFiltro"
+onclick="filtrarMovimentos('DESPESA',this)">
+Despesas
+</button>
+
+<button
+class="btnFiltro"
+onclick="filtrarMovimentos('RECORRENTE',this)">
+Recorrentes
+</button>
+
 </div>
 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
 
@@ -624,31 +734,64 @@ safe("quantidadeParcelas").value="1"
 
 await carregar()
 }
-/* ====================================================031 – ABRIR INSERÇÃO==================================================== */
+/*=========================================================
+031 – ABRIR INSERÇÃO RESPONSIVA
+=========================================================*/
 function abrirInsercao(){
+
 const f=safe("formInsercao")
-const abrindo=f.style.display==="none"
+
+if(!f)return
+
+const abrindo=
+f.style.display==="none" ||
+getComputedStyle(f).display==="none"
+
 f.style.display=abrindo?"block":"none"
-if(abrindo){
+
+if(!abrindo)return
+
 const hoje=hojeISO()
+
 if(!safe("dataNovo").value){
 safe("dataNovo").value=hoje
 }
+
 if(!safe("vencimentoNovo").value){
 safe("vencimentoNovo").value=hoje
 }
+
 if(!safe("tipoNovo").value){
 safe("tipoNovo").value="DESPESA"
 }
+
 if(!window._eventoTipoNovo){
+
 window._eventoTipoNovo=true
+
 safe("tipoNovo").addEventListener("change",()=>{
+
 if(safe("tipoNovo").value==="RECEITA"){
 safe("vencimentoNovo").value=""
 }
+
 })
+
 }
+
+setTimeout(()=>{
+
+f.scrollIntoView({
+behavior:"smooth",
+block:"start"
+})
+
+if(window.innerWidth>768){
+safe("categoriaNova")?.focus()
 }
+
+},100)
+
 }
 /* ====================================================032 – ATUALIZAR BOTÃO EDIÇÃO==================================================== */
 function toggleEdicao(){
@@ -1238,7 +1381,34 @@ if(mesesOcultos[chave]===undefined){
 mesesOcultos[chave]=(chave!==chaveAtual)
 }
 
-let listaMes=grupos[chave]||[]
+let listaMes=[...(grupos[chave]||[])]
+
+if(filtroMovimento==="RECEITA"){
+
+listaMes=listaMes.filter(x=>
+x.tipo==="RECEITA"
+)
+
+}
+
+if(filtroMovimento==="DESPESA"){
+
+listaMes=listaMes.filter(x=>
+x.tipo==="DESPESA"
+)
+
+}
+
+if(filtroMovimento==="RECORRENTE"){
+
+listaMes=listaMes.filter(x=>
+x.recorrente===true ||
+x.modo_lancamento==="recorrente" ||
+x.modo_lancamento==="parcelado" ||
+!!x.grupo_recorrencia
+)
+
+}
 listaMes.sort((a,b)=>{
 return new Date((a.data_vencimento||a.data)) - new Date((b.data_vencimento||b.data))
 })
@@ -1324,7 +1494,11 @@ else totalPendente+=valor
 }
 
 html+=`
-<div class="movItem" style="display:grid;grid-template-columns:110px 110px 120px 1fr 140px 110px 90px 50px;align-items:center;gap:10px;padding:8px 12px;background:#fff;border:1px solid #e2e8f0;border-radius:18px;margin-bottom:8px;box-shadow:0 2px 10px rgba(0,0,0,.03)">
+<div
+class="movItem ${x.tipo==="RECEITA"?"movReceita":"movDespesa"}"
+data-tipo="${x.tipo}"
+data-status="${status}">
+
 
 <!-- VENCIMENTO -->
 <div>
@@ -1560,8 +1734,11 @@ location.reload()
 function abrirFinanceiro(){
 abrirTela("extrato")
 }
-/* ========================function==================================================== */
+/*=========================================================
+037 – NAVEGAÇÃO RESPONSIVA
+=========================================================*/
 function abrirTela(nome,el){
+
 document.body.classList.remove("inicio")
 
 document.querySelectorAll(".telaApp").forEach(t=>{
@@ -1569,7 +1746,17 @@ t.classList.remove("telaAtiva")
 t.style.display="none"
 })
 
-const tela=safe(nome==="ia"?"telaIA":"tela"+nome.charAt(0).toUpperCase()+nome.slice(1))
+const mapaTelas={
+inicio:"telaInicio",
+extrato:"telaExtrato",
+perfil:"telaPerfil",
+ia:"telaIA",
+relatorios:"telaRelatorios"
+}
+
+const idTela=mapaTelas[nome]
+
+const tela=safe(idTela)
 
 if(!tela){
 console.error("Tela não encontrada:",nome)
@@ -1582,24 +1769,87 @@ tela.classList.add("telaAtiva")
 document.querySelectorAll(".navItem").forEach(n=>{
 n.classList.remove("navAtivo")
 })
-if(el)el.classList.add("navAtivo")
+
+if(el){
+el.classList.add("navAtivo")
+}else{
+
+document.querySelectorAll(".navItem").forEach(item=>{
+
+const acao=item.getAttribute("onclick")||""
+
+if(acao.includes(`'${nome}'`)||acao.includes(`"${nome}"`)){
+item.classList.add("navAtivo")
+}
+
+})
+
+}
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+})
+
 if(nome==="extrato"){
-render()
-}
-if(nome==="inicio"){
-document.body.classList.add("inicio")
-}
-/* 🔥 IA */
-if(nome==="ia"){
-if(!window._iaInit){
-window._iaInit=true
+
 setTimeout(()=>{
-addMsgIA("🤖 Olá! Sou sua IA financeira.\n\nPosso te ajudar com:\n• análise de gastos\n• sugestões de economia\n• planejamento financeiro\n\nDigite sua pergunta 👇","bot")
+render()
+},30)
+
+}
+
+if(nome==="inicio"){
+
+document.body.classList.add("inicio")
+
+setTimeout(()=>{
+
+renderDashboardAnual()
+renderVencimentos()
+
+if(window.graficoFinanceiro){
+window.graficoFinanceiro.resize()
+}else{
+renderGraficoFinanceiro()
+}
+
+},100)
+
+}
+
+if(nome==="ia"){
+
+if(!window._iaInit){
+
+window._iaInit=true
+
+setTimeout(()=>{
+
+addMsgIA(
+"🤖 Olá! Sou sua IA financeira.\n\nPosso te ajudar com:\n• análise de gastos\n• sugestões de economia\n• planejamento financeiro\n\nDigite sua pergunta 👇",
+"bot"
+)
+
 },300)
+
 }
-safe("chatIA").innerHTML=""
-setTimeout(()=>safe("perguntaIA").focus(),200)
+
+setTimeout(()=>{
+
+const campo=safe("perguntaIA")
+
+if(
+campo &&
+window.innerWidth>768
+){
+campo.focus()
 }
+
+},200)
+
+}
+
 }
 /* ========================function  ==================================================== */
 async function verFinanceiroUsuario(userId){
@@ -1878,7 +2128,9 @@ const wb=XLSX.utils.book_new()
 XLSX.utils.book_append_sheet(wb,ws,"Financeiro")
 XLSX.writeFile(wb,"financeiro-2026.xlsx")
 }
-/* 004 function renderGraficoFinanceiro */
+/*=========================================================
+004 – GRÁFICO FINANCEIRO RESPONSIVO
+=========================================================*/
 function renderGraficoFinanceiro(){
 
 const canvas=document.getElementById("graficoFinanceiro")
@@ -1890,14 +2142,16 @@ const box=canvas.parentElement
 if(!box)return
 
 box.style.display="block"
-box.style.height="320px"
-box.style.minHeight="320px"
+box.style.position="relative"
 
-canvas.width=1200
-canvas.height=320
+if(window.innerWidth<=600){
+box.style.height="280px"
+}else{
+box.style.height="340px"
+}
 
 canvas.style.width="100%"
-canvas.style.height="320px"
+canvas.style.height="100%"
 canvas.style.display="block"
 
 if(
@@ -1916,7 +2170,10 @@ const data=x.data_vencimento||x.data
 
 if(!data)return
 
-const mes=parseInt(data.slice(5,7))-1
+const mes=parseInt(
+String(data).slice(5,7),
+10
+)-1
 
 if(mes<0||mes>11)return
 
@@ -1928,39 +2185,131 @@ despesas[mes]+=Number(x.valor||0)
 
 })
 
-window.graficoFinanceiro=
-new Chart(canvas,{
+window.graficoFinanceiro=new Chart(canvas,{
+
 type:"bar",
+
 data:{
+
 labels:[
 "Jan","Fev","Mar","Abr","Mai","Jun",
 "Jul","Ago","Set","Out","Nov","Dez"
 ],
+
 datasets:[
 {
 label:"Receitas",
 data:receitas,
-backgroundColor:"#16a34a"
+backgroundColor:"#16a34a",
+borderRadius:6,
+maxBarThickness:34
 },
 {
 label:"Despesas",
 data:despesas,
-backgroundColor:"#dc2626"
+backgroundColor:"#dc2626",
+borderRadius:6,
+maxBarThickness:34
 }
 ]
+
 },
+
 options:{
+
 responsive:true,
-maintainAspectRatio:false
+maintainAspectRatio:false,
+
+interaction:{
+mode:"index",
+intersect:false
+},
+
+plugins:{
+
+legend:{
+position:"bottom",
+labels:{
+usePointStyle:true,
+boxWidth:8,
+padding:18
 }
+},
+
+tooltip:{
+callbacks:{
+label(context){
+return context.dataset.label+
+": "+
+formatarMoeda(context.raw)
+}
+}
+
+}
+
+},
+
+scales:{
+
+x:{
+grid:{
+display:false
+},
+ticks:{
+font:{
+size:window.innerWidth<=600?10:12
+}
+}
+},
+
+y:{
+beginAtZero:true,
+ticks:{
+callback(valor){
+
+if(valor>=1000000){
+return "R$ "+(valor/1000000).toFixed(1)+" mi"
+}
+
+if(valor>=1000){
+return "R$ "+(valor/1000).toFixed(0)+" mil"
+}
+
+return "R$ "+valor
+
+}
+}
+}
+
+}
+
+}
+
 })
 
-setTimeout(()=>{
-window.dispatchEvent(new Event("resize"))
-},500)
+}
+/*=========================================================
+005 – RESPONSIVIDADE DINÂMICA
+=========================================================*/
+let timerResizeFinanceiro=null
 
+window.addEventListener("resize",()=>{
+
+clearTimeout(timerResizeFinanceiro)
+
+timerResizeFinanceiro=setTimeout(()=>{
+
+if(
+window.graficoFinanceiro &&
+typeof window.graficoFinanceiro.resize==="function"
+){
+window.graficoFinanceiro.resize()
 }
 
+},150)
+
+})
+  
 /* 005 META */
 function atualizarMeta(inicio=null,fim=null){
 
@@ -2481,6 +2830,27 @@ safe("telaLogin").style.display="flex"
 
 safe("loginUser").value=email
 safe("loginPass").value=senha
+
+}
+
+/*=========================================================
+038 – FILTROS DO EXTRATO
+=========================================================*/
+let filtroMovimento="TODAS"
+
+function filtrarMovimentos(tipo,botao){
+
+filtroMovimento=tipo
+
+document.querySelectorAll(".btnFiltro").forEach(btn=>{
+btn.classList.remove("btnFiltroAtivo")
+})
+
+if(botao){
+botao.classList.add("btnFiltroAtivo")
+}
+
+render()
 
 }
 
