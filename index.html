@@ -1358,10 +1358,14 @@ if(blocoUser)blocoUser.style.display="block"
 if(areaUsuarios)areaUsuarios.style.display="none"
 }
 
-const hoje=new Date()
-const expira=usuario.plano_expira_em?new Date(usuario.plano_expira_em):null
-const bloqueado=(usuario.plano!=="pro"||(expira&&expira<hoje))
-
+/* ================= CONTROLE DO PLANO ================= */
+const hojePlano=new Date()
+const plano=String(usuario?.plano||localStorage.getItem("usuario_plano")||"free").toLowerCase()
+const tipoUsuario=String(usuario?.tipo||localStorage.getItem("tipo_usuario_lancamentos")||"user").toLowerCase()
+const expira=usuario?.plano_expira_em?new Date(usuario.plano_expira_em):null
+const adminAtivo=isAdmin===true||tipoUsuario==="admin"
+const planoPro=plano==="pro"&&(!expira||expira>=hojePlano)
+const bloqueado=!(adminAtivo||planoPro)
 try{
 
 const tela=safe("telaExtrato")
@@ -1500,7 +1504,7 @@ ${nomeMes(mes)} ${ano}
 <div class="totalMes">
 
 <div class="valorMes" style="color:${saldo>=0?"#16a34a":"#dc2626"}">
-${bloqueado?"🔒":(visMes[chave]?formatarMoeda(saldo):"R$ ***")}
+${bloqueado?"🔒":(visMes[chave]===true?formatarMoeda(saldo):"R$ ***")}
 </div>
 
 <button class="btnMes"
@@ -1534,7 +1538,7 @@ html+=`
 listaMes.forEach(x=>{
 
 const valor=Number(x.valor||0)
-const oculto=visibilidade[x.id]!==undefined?visibilidade[x.id]:(x.tipo==="RECEITA")
+const valorVisivel=visibilidade[x.id]===true
 const status=x.status||"pendente"
 
 if(x.tipo==="DESPESA"){
@@ -1586,7 +1590,7 @@ ${modoEdicao
 <div style="font-size:18px;font-weight:900;color:${x.tipo==="RECEITA"?"#16a34a":"#dc2626"};white-space:nowrap">
 ${modoEdicao
 ? `<input value="${valor}" type="number" onchange="editarCampo('${x.id}','valor',this.value)" style="width:110px;text-align:right;font-size:13px">`
-: (bloqueado?"🔒":(oculto?"R$ ***":formatarMoeda(valor)))}
+: (bloqueado?"🔒":(valorVisivel?formatarMoeda(valor):"R$ ***"))}
 </div>
 </div>
 
@@ -1656,9 +1660,13 @@ function toggleMes(chave){
 mesesOcultos[chave]=!mesesOcultos[chave]
 render()
 }
-/* ========================function  ==================================================== */
+/* ======================== VISIBILIDADE DO LANÇAMENTO ======================== */
 function toggleValor(id){
+if(visibilidade[id]===undefined){
+visibilidade[id]=true
+}else{
 visibilidade[id]=!visibilidade[id]
+}
 render()
 }
 /* ========================function  ==================================================== */
@@ -1672,9 +1680,13 @@ function toggleEditarLinha(id){
 linhasEditando[id]=!linhasEditando[id]
 carregarUsuariosAdmin()
 }
-/* ========================function  ==================================================== */
+/* ======================== VISIBILIDADE DO TOTAL DO MÊS ======================== */
 function toggleMesValor(chave){
+if(visMes[chave]===undefined){
+visMes[chave]=true
+}else{
 visMes[chave]=!visMes[chave]
+}
 render()
 }
 /* ========================function  ==================================================== */
