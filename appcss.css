@@ -330,3 +330,307 @@ font-size:.72rem;
 }
 
 }
+
+/*=========================================================
+EXTRATO PROFISSIONAL - PC / TABLET / CELULAR
+=========================================================*/
+.listaMovimentos{
+width:100%;
+min-width:0;
+}
+.cabecalhoExtrato{
+display:grid;
+grid-template-columns:110px 110px 130px minmax(180px,1fr) 140px 110px 90px 50px;
+align-items:center;
+gap:10px;
+padding:8px 12px;
+margin:0 0 8px;
+font-size:10px;
+font-weight:900;
+color:#64748b;
+text-transform:uppercase;
+letter-spacing:.04em;
+}
+.movItem{
+display:grid;
+grid-template-columns:110px 110px 130px minmax(180px,1fr) 140px 110px 90px 50px;
+align-items:center;
+gap:10px;
+width:100%;
+min-width:0;
+padding:10px 12px;
+margin-bottom:8px;
+background:#fff;
+border:1px solid #e2e8f0;
+border-radius:16px;
+box-shadow:0 2px 10px rgba(15,23,42,.04);
+transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease;
+}
+.movItem:hover{
+border-color:#cbd5e1;
+box-shadow:0 6px 18px rgba(15,23,42,.08);
+}
+.movCampo{
+min-width:0;
+}
+.movVencimento input,
+.movPagamento input{
+width:100%;
+height:36px;
+padding:5px 7px;
+font-size:11px;
+border:1px solid #cbd5e1;
+border-radius:9px;
+background:#fff;
+color:#334155;
+}
+.movCategoria{
+overflow:hidden;
+}
+.movCategoria span{
+display:inline-block;
+max-width:100%;
+padding:5px 8px;
+border-radius:999px;
+font-size:11px;
+font-weight:900;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+.movDescricao{
+font-size:13px;
+font-weight:800;
+line-height:1.25;
+overflow-wrap:anywhere;
+}
+.movDescricao input{
+width:100%;
+min-width:0;
+}
+.movValor{
+display:flex;
+justify-content:flex-end;
+align-items:center;
+font-size:16px;
+font-weight:900;
+white-space:nowrap;
+text-align:right;
+}
+.movValor input{
+width:110px;
+text-align:right;
+}
+.movStatus,
+.movRecorrencia,
+.movVisualizacao{
+display:flex;
+align-items:center;
+justify-content:center;
+}
+.statusEntrada{
+font-size:11px;
+font-weight:900;
+color:#16a34a;
+}
+.btnVisualizarValor{
+display:flex;
+align-items:center;
+justify-content:center;
+width:36px;
+height:36px;
+min-width:36px;
+padding:0;
+border:0;
+border-radius:10px;
+background:#0ea5e9;
+color:#fff;
+font-size:14px;
+cursor:pointer;
+touch-action:manipulation;
+}
+.btnVisualizarValor:active{
+transform:scale(.94);
+}
+.resumoStatusMes{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:12px;
+padding:10px 14px;
+margin-top:6px;
+background:#f8fafc;
+border:1px solid #e2e8f0;
+border-radius:14px;
+font-size:12px;
+font-weight:800;
+}
+.resumoPago{
+color:#16a34a;
+}
+.resumoPendente{
+color:#f59e0b;
+}
+.mesSemMovimentos{
+padding:20px;
+margin:6px 0;
+border:1px dashed #cbd5e1;
+border-radius:14px;
+background:#f8fafc;
+color:#64748b;
+font-size:13px;
+font-weight:700;
+text-align:center;
+}
+/*=========================================================
+TABLET
+=========================================================*/
+@media(max-width:1100px) and (min-width:769px){
+.listaMovimentos{
+overflow-x:auto;
+-webkit-overflow-scrolling:touch;
+padding-bottom:4px;
+}
+.cabecalhoExtrato,
+.movItem{
+min-width:930px;
+grid-template-columns:105px 105px 120px minmax(180px,1fr) 130px 105px 85px 45px;
+}
+}
+/*=========================================================
+CELULAR - LANÇAMENTO EM CARD
+=========================================================*/
+@media(max-width:768px){
+.cabecalhoExtrato{
+display:none!important;
+}
+.listaMovimentos{
+width:100%;
+overflow:visible;
+}
+.movItem{
+display:grid!important;
+grid-template-columns:1fr 1fr!important;
+gap:10px 12px!important;
+width:100%!important;
+min-width:0!important;
+padding:14px!important;
+margin:0 0 10px!important;
+border-radius:16px!important;
+}
+.movItem.movReceita{
+border-left:4px solid #16a34a;
+}
+.movItem.movDespesa{
+border-left:4px solid #dc2626;
+}
+.movCampo{
+position:relative;
+min-width:0;
+padding-top:17px;
+}
+.movCampo::before{
+position:absolute;
+top:0;
+left:0;
+font-size:9px;
+line-height:1;
+font-weight:900;
+letter-spacing:.04em;
+color:#94a3b8;
+text-transform:uppercase;
+}
+.movVencimento::before{
+content:"Vencimento";
+}
+.movPagamento::before{
+content:"Pagamento";
+}
+.movCategoria::before{
+content:"Categoria";
+}
+.movDescricao::before{
+content:"Descrição";
+}
+.movValor::before{
+content:"Valor";
+}
+.movStatus::before{
+content:"Status";
+}
+.movRecorrencia::before{
+content:"Recorrência";
+}
+.movVisualizacao::before{
+content:"Visualizar";
+}
+.movVencimento input,
+.movPagamento input{
+width:100%!important;
+height:40px!important;
+min-height:40px;
+font-size:12px!important;
+padding:5px 6px!important;
+}
+.movCategoria{
+display:flex;
+align-items:center;
+}
+.movCategoria span{
+font-size:10px;
+}
+.movDescricao{
+grid-column:1/-1;
+font-size:14px;
+min-height:40px;
+}
+.movValor{
+justify-content:flex-start;
+font-size:18px;
+text-align:left;
+min-height:40px;
+}
+.movStatus,
+.movRecorrencia,
+.movVisualizacao{
+justify-content:flex-start;
+min-height:40px;
+}
+.btnStatus,
+.btnRecorrencia{
+min-height:38px;
+padding:8px 10px;
+touch-action:manipulation;
+}
+.btnVisualizarValor{
+width:40px;
+height:40px;
+min-width:40px;
+}
+.resumoStatusMes{
+flex-direction:column;
+align-items:stretch;
+gap:5px;
+padding:10px 12px;
+}
+.resumoStatusMes>div{
+width:100%;
+}
+}
+/*=========================================================
+CELULAR PEQUENO
+=========================================================*/
+@media(max-width:420px){
+.movItem{
+grid-template-columns:1fr 1fr!important;
+gap:9px!important;
+padding:12px!important;
+}
+.movVencimento input,
+.movPagamento input{
+font-size:11px!important;
+}
+.movValor{
+font-size:16px;
+}
+}
