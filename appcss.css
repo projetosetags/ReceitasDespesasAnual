@@ -283,3 +283,50 @@ button:disabled{opacity:.55;cursor:not-allowed;transform:none!important}
   body{padding:0;background:#fff}.card,.boxMes{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
 }
 
+/*=========================================================
+ZOOM RESPONSIVO
+=========================================================*/
+
+:root{
+--zoom-app:1;
+}
+
+@media(max-width:768px){
+
+html{
+font-size:calc(16px * var(--zoom-app));
+}
+
+/* ELEMENTOS TOUCH */
+button,
+input,
+select,
+textarea{
+font-size:1rem;
+}
+
+.btnFiltro{
+font-size:.78rem;
+}
+
+.movItem{
+font-size:.82rem;
+}
+
+.topoMes{
+font-size:1rem;
+}
+
+.tituloMes{
+font-size:1rem;
+}
+
+.bottomNav{
+font-size:.75rem;
+}
+
+.navItem{
+font-size:.72rem;
+}
+
+}
